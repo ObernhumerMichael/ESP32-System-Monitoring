@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  eclipse-mosquitto:
+    container_name: eclipse-mosquitto
+    stdin_open: true
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    image: eclipse-mosquitto
+    networks:
+      - esp
+networks:
+  esp:
+    driver: bridge
