@@ -24,14 +24,20 @@ This project should achieve the following things:
 - [x] IP address is reachable form an other device
 - [ ] Make a heartbeat of the Raspi to the ESP
   - [x] Mosquitto docker for the Raspi
-  - [ ] Hearbeat script for the Raspi
-  - [ ] Hearteat script for the ESP
+  - [ ] Heartbeat script for the Raspi
+    - [x] Filesystem
+    - [x] Internet
+    - [x] DNS
+    - [x] MQTT
+    - [ ] Dockerize
+  - [ ] Heartbeat script for the ESP
 - [ ] Reverse engineer the Tapo P110 API that controls the power state
 - [ ] When several heartbeats are missed the ESP should switch the power state off and back on again to force a reboot of the Raspi.
+- [ ] Make the MQTT connection secure.
 
 ## Raspberry installation
 
-Copy the Raspberry folder to the desired destination on the Raspi.
+Copy the Heartbeat folder to the desired destination on the Raspi.
 Execute the following command in the folder:
 
 ```sh
