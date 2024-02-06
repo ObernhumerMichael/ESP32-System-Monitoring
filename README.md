@@ -19,8 +19,8 @@ This project should achieve the following things:
 
 - [x] Make a git repository.
 - [x] Connect to the ESP32 and check if it works.
-- [ ] Connect the ESP to the Wi-Fi.
-- [ ] Ping an IP address
+- [x] Connect the ESP to the Wi-Fi.
+- [x] IP address is reachable form an other device
 - [ ] Make a heartbeat of the Raspi to the ESP
 - [ ] Reverse engineer the Tapo P110 API that controls the power state
 - [ ] When several heartbeats are missed the ESP should switch the power state off and back on again to force a reboot of the Raspi.

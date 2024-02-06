@@ -1,23 +1,30 @@
+#include <WiFi.h>
 #include <Arduino.h>
 
-// put function declarations here:
-int myFunction(int, int);
+const char *ssid = "HANDY-M.O";
+const char *password = "1234567890";
 
 void setup()
 {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
-  Serial.begin(9600); // Initialize serial communication at 9600 baud
+  Serial.begin(9600);
+  delay(1000);
+
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+  Serial.println("\nConnecting");
+
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    Serial.print(".");
+    delay(100);
+  }
+
+  Serial.println("\nConnected to the WiFi network");
+  Serial.print("Local ESP32 IP: ");
+  Serial.println(WiFi.localIP());
 }
 
 void loop()
 {
-  // put your main code here, to run repeatedly:
-  Serial.println("Debug message: Hello, world!");
-}
-
-// put function definitions here:
-int myFunction(int x, int y)
-{
-  return x + y;
+  Serial.println(WiFi.localIP());
 }
