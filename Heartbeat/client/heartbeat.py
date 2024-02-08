@@ -52,10 +52,10 @@ def ping(target="1.1.1.1"):
             print(f"{target} is reachable ({response} ms)")
             return True
         else:
-            log(f"{target} is unreachable")
+            log(f"Error: {target} is unreachable")
 
     except subprocess.TimeoutExpired:
-        log("Ping timed out.")
+        log("Error: Ping timed out.")
     except Exception as e:
         log("An error occurred:" + str(e))
     return False
@@ -76,21 +76,21 @@ def checkSystem():
     if isFileSystemAlive and isInternetReachable and isDNSFunctional:
         print("Everything seems fine")
     else:
-        print("There is something wrong with the system")
+        log("Error: There is something wrong with the system")
 
     return data
 
 
 def on_connect(client, userdata, flags, rc):
-    log("Connected to MQTT broker established.")
+    log("Important: Connection to MQTT broker established.")
 
 
 def on_connect_fail(client, userdata, flags, rc):
-    log("Failed to establish a connection with the MQTT broker!")
+    log("Error: Failed to establish a connection with the MQTT broker!")
 
 
 def on_disconnect(client, userdata, rc):
-    log("Disconnected from MQTT broker!")
+    log("Error: Disconnected from MQTT broker!")
 
 
 def on_publish(client, userdata, rc):
@@ -119,7 +119,7 @@ while True:
             client.publish(topic, json.dumps(data))
             sleep(30)
         else:
-            log("There is no connection to the MQTT broker")
+            log("Error: There is no connection to the MQTT broker")
             client.connect(broker_address, port, keepalive)
             sleep(5)
     except Exception as e:

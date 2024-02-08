@@ -18,6 +18,7 @@ services:
   heartbeat-client:
     container_name: heartbeat-client
     image: localhost/heartbeat-client
+    restart: unless-stopped
     build: .
     environment:
       MQTT_HOST: "mqtt-host"

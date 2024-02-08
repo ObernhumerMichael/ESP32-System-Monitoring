@@ -46,4 +46,6 @@ Execute the following command in the folder:
 docker compose up -d
 ```
 
-This command starts the docker and the MQTT server.
+This command starts the docker containers that include the MQTT server and the heartbeat script.
+To view logs from the heartbeat script have a look at `/Heartbeat/data/log.txt`.
+For logs of the MQTT server look into `/Heartbeat/mosquitto/log/mosquitto.log`
