@@ -4,40 +4,42 @@
 
 This project should achieve the following things:
 
-- Monitor my Raspberry Pi 5 if it is reachable and or didn't freeze.
-- If the PI froze it should cut it should switch the smart Tapo P110 off and on to force a restart.
-- It should monitor the temperature and air quality of the room in which the raspberry is located.
+- Monitor a Linux client if it is reachable and or didn't freeze.
+- If the client froze it should send an email notification.
+- If the client froze it should cut its power supply shortly to force a reboot.
 
 ## Things needed
 
 - ESP32 Devkitc v5
-- Raspberry Pi 5
+- Linux client e.g. Raspberry Pi 5
 - TP-Link Tapo P110
 - Docker installed on the Raspberry Pi
-- Router
+- Working WLAN infrastructure
+- Platformio
 
 ## Roadmap
 
 - [x] Make a git repository.
 - [x] Connect to the ESP32 and check if it works.
 - [x] Connect the ESP to the Wi-Fi.
-- [x] IP address is reachable form an other device
-- [ ] Make a heartbeat of the Raspi to the ESP
-  - [x] Mosquitto docker for the Raspi
-  - [ ] Heartbeat script for the Raspi
+- [x] IP address is reachable form another device
+- [ ] Make a heartbeat from the client to the ESP
+  - [x] Mosquitto docker for the client
+  - [x] Heartbeat script for the client
     - [x] Filesystem
     - [x] Internet
     - [x] DNS
     - [x] MQTT
-    - [ ] Dockerize
+    - [x] Dockerize
   - [ ] Heartbeat script for the ESP
-- [ ] Reverse engineer the Tapo P110 API that controls the power state
-- [ ] When several heartbeats are missed the ESP should switch the power state off and back on again to force a reboot of the Raspi.
+- [ ] Make the ESP send an email when the client goes down.
+- [ ] Reverse-engineer the Tapo P110 API that controls the power state
+- [ ] When several heartbeats are missed the ESP should switch the power state off and back on again to force a reboot of the client.
 - [ ] Make the MQTT connection secure.
 
-## Raspberry installation
+## Client installation
 
-Copy the Heartbeat folder to the desired destination on the Raspi.
+Copy the Heartbeat folder to the desired destination on the client.
 Execute the following command in the folder:
 
 ```sh

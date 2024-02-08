@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  eclipse-mosquitto:
+  mqtt-host:
     container_name: eclipse-mosquitto
     stdin_open: true
     restart: unless-stopped
@@ -10,12 +10,19 @@ services:
       - "1883:1883"
       - "9001:9001"
     volumes:
-      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./conf/mosquitto.conf:/mosquitto/config/mosquitto.conf
       - ./mosquitto/data:/mosquitto/data
       - ./mosquitto/log:/mosquitto/log
     image: eclipse-mosquitto
-    networks:
-      - esp
-networks:
-  esp:
-    driver: bridge
+
+  heartbeat-client:
+    container_name: heartbeat-client
+    image: localhost/heartbeat-client
+    build: .
+    environment:
+      MQTT_HOST: "mqtt-host"
+    depends_on:
+      - mqtt-host
+    volumes:
+      - './data:/app/data'
+    command: './client/heartbeat.py'

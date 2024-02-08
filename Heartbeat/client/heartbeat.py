@@ -3,6 +3,7 @@ import json
 import paho.mqtt.client as mqtt
 import subprocess
 import os
+import ping3
 from time import sleep
 
 
@@ -13,7 +14,7 @@ def getTimestamp():
 def log(message):
     log = getTimestamp() + " | " + message + "\n"
     print(log)
-    with open("logs.txt", "a") as file:
+    with open("./data/logs.txt", "a") as file:
         file.write(log)
 
 
@@ -45,17 +46,14 @@ def checkFileSystem():
 
 def ping(target="1.1.1.1"):
     try:
-        # Run the ping command
-        result = subprocess.run(
-            ["ping", "-c", "5", target], capture_output=True, text=True, timeout=10
-        )
+        response = ping3.ping(target)
 
-        # Check the return code to see if the ping was successful
-        if result.returncode == 0:
-            print("Ping to " + target + " successful!")
+        if response is not None:
+            print(f"{target} is reachable ({response} ms)")
             return True
         else:
-            log("ping to " + target + " failed! error message: " + result.stderr)
+            log(f"{target} is unreachable")
+
     except subprocess.TimeoutExpired:
         log("Ping timed out.")
     except Exception as e:
@@ -100,7 +98,7 @@ def on_publish(client, userdata, rc):
 
 
 # MQTT config
-broker_address = "localhost"
+broker_address = os.environ.get("MQTT_HOST") or "localhost"
 port = 1883
 keepalive = 60
 topic = "raspi-01/health"
