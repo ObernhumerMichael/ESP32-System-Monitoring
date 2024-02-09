@@ -1,6 +1,7 @@
 #include <WiFi.h>
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
+#include <ESP_Mail_Client.h>
 
 void IRAM_ATTR timerISR();
 void callback(char *topic, byte *payload, unsigned int length);
@@ -8,17 +9,49 @@ void reconnect();
 void noMessages();
 void checkMessage(DynamicJsonDocument doc);
 void systemPartlyDown(DynamicJsonDocument doc);
+void smtpCallback(SMTP_Status status);
 
-const char *ssid = "";
-const char *password = "";
-const char *mqtt_server = "";
+// For the WiFi connection
+WiFiClient espClient;
+const char *ssid = "HANDY-M.O";
+const char *password = "1234567890";
+const char *mqtt_server = "192.168.196.141";
 const char *topic = "raspi-01/health";
 
+// For the email function
+#define SMTP_HOST "smtp.gmail.com"
+#define SMTP_PORT 465
+#define AUTHOR_EMAIL "shadowrezkin@gmail.com"
+#define AUTHOR_PASSWORD "rmsovhfuimccporb"
+#define RECIPIENT_EMAIL "michaelobernhumer@gmail.com"
+SMTPSession smtp;
+
+//  Timer Interrupt
 volatile int sec = 0;
 portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
 hw_timer_t *timer = NULL;
-WiFiClient espClient;
+
+// For the MQTT client
 PubSubClient client(espClient);
+
+// Setup functions
+void setupWiFi()
+{
+  WiFi.begin(ssid, password);
+  Serial.println("Connecting to WiFi");
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("WiFi connected");
+}
+
+void setupMQTT()
+{
+  client.setServer(mqtt_server, 1883);
+  client.setCallback(callback);
+}
 
 void setupInterrupt()
 {
@@ -34,16 +67,8 @@ void setup()
 {
   setCpuFrequencyMhz(80);
   Serial.begin(115200);
-  WiFi.begin(ssid, password);
-  Serial.println("Connecting to WiFi");
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("WiFi connected");
-  client.setServer(mqtt_server, 1883);
-  client.setCallback(callback);
+  setupWiFi();
+  setupMQTT();
   setupInterrupt();
 }
 
@@ -70,9 +95,11 @@ void IRAM_ATTR timerISR()
   portEXIT_CRITICAL_ISR(&timerMux);
 }
 
+// callback for an mqtt message
 void callback(char *topic, byte *payload, unsigned int length)
 {
-  Serial.println("Message arrived in topic: " + String(topic));
+  Serial.print("Message arrived in topic: ");
+  Serial.println(String(topic));
 
   // Convert payload to a string
   String payloadStr;
@@ -91,10 +118,10 @@ void callback(char *topic, byte *payload, unsigned int length)
     return;
   }
 
-  // Access JSON data
   checkMessage(doc);
 }
 
+// reconnects the esp to the mqtt broker if it lost its connection
 void reconnect()
 {
   while (!client.connected())
@@ -115,6 +142,7 @@ void reconnect()
   }
 }
 
+// checks the mqtt message if all the systems are healthy
 void checkMessage(DynamicJsonDocument doc)
 {
   Serial.println("Checking the MQTT message");
@@ -150,7 +178,7 @@ void checkMessage(DynamicJsonDocument doc)
 
 void noMessages()
 {
-  Serial.println("No MQTT messages recieved for some time");
+  Serial.println("No MQTT messages received for some time");
 }
 
 void systemPartlyDown(DynamicJsonDocument doc)
