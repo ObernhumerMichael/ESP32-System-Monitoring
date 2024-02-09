@@ -6,7 +6,8 @@ void IRAM_ATTR timerISR();
 void callback(char *topic, byte *payload, unsigned int length);
 void reconnect();
 void noMessages();
-void systemPartlyDown();
+void checkMessage(DynamicJsonDocument doc);
+void systemPartlyDown(DynamicJsonDocument doc);
 
 const char *ssid = "";
 const char *password = "";
@@ -91,9 +92,7 @@ void callback(char *topic, byte *payload, unsigned int length)
   }
 
   // Access JSON data
-  const char *value = doc["timestamp"];
-  Serial.print("Received value: ");
-  Serial.println(value);
+  checkMessage(doc);
 }
 
 void reconnect()
@@ -110,9 +109,42 @@ void reconnect()
     {
       Serial.print("failed, rc=");
       Serial.print(client.state());
-      Serial.println(" try again in 5 seconds");
+      Serial.println("try again in 5 seconds");
       delay(5000);
     }
+  }
+}
+
+void checkMessage(DynamicJsonDocument doc)
+{
+  Serial.println("Checking the MQTT message");
+
+  const char *timestamp = doc["timestamp"];
+
+  bool isDNSFunctional = false;
+  bool isInternetReachable = false;
+  bool isFileSystemAlive = false;
+
+  if (doc.containsKey("isDNSFunctional"))
+  {
+    isDNSFunctional = doc["isDNSFunctional"].as<bool>();
+  }
+  if (doc.containsKey("isInternetReachable"))
+  {
+    isInternetReachable = doc["isInternetReachable"].as<bool>();
+  }
+  if (doc.containsKey("isFileSystemAlive"))
+  {
+    isFileSystemAlive = doc["isFileSystemAlive"].as<bool>();
+  }
+
+  if (isDNSFunctional && isInternetReachable && isFileSystemAlive)
+  {
+    Serial.println("Everything is up and running!");
+  }
+  else
+  {
+    systemPartlyDown(doc);
   }
 }
 
@@ -121,7 +153,7 @@ void noMessages()
   Serial.println("No MQTT messages recieved for some time");
 }
 
-void systemPartlyDown()
+void systemPartlyDown(DynamicJsonDocument doc)
 {
   Serial.println("The system is partly down");
 }
