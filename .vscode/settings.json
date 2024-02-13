@@ -1,4 +1,13 @@
 {
   "cmake.configureOnOpen": true,
-  "cSpell.words": ["Devkitc", "keepalive", "raspi", "rmsovhfuimccporb", "Tapo"]
+  "cSpell.words": [
+    "Devkitc",
+    "keepalive",
+    "nist",
+    "raspi",
+    "rmsovhfuimccporb",
+    "SAMD",
+    "Tapo"
+  ],
+  "cmake.sourceDirectory": "/home/michael/Documents/Persoenlich/Projekte/ESP32/System-Health-Checker/.pio/libdeps/esp32dev/ArduinoJson/src"
 }

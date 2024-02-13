@@ -42,7 +42,7 @@ This project should achieve the following things:
 - [ ] Make the ESP send an email when the client goes down.
   - [x] Make an ISR that checks the time between the heartbeats
   - [x] Make it recognize when the system is down
-  - [ ] Send email when the system is down
+  - [ ] Send email when the system is down/up/initialized
 - [ ] Secure the application with a .env file
 - [ ] Reverse-engineer the Tapo P110 API that controls the power state
 - [ ] When several heartbeats are missed the ESP should switch the power state off and back on again to force a reboot of the client.
